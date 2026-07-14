@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<script type="application/json" id="cowork-artifact-meta">
-{
-  "name": "Hira Notice Dashboard",
-  "schemaVersion": 1,
-  "description": "건강보험심사평가원 제도·정책 > 보험인정기준(고시/자료실) 최신 개정사항 모니터링 대시보드. 분야별 필터/검색, 고시-자료실 연계, 분석 코멘트 제공."
-}
-</script>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -107,6 +100,22 @@
   }
   .related a { color: #3949ab; text-decoration: none; }
   .related a:hover { text-decoration: underline; }
+  .excerpt {
+    font-size: 12px;
+    color: #495057;
+    margin-top: 6px;
+    line-height: 1.6;
+    background: #f8f9fa;
+    border-left: 3px solid #dee2e6;
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .reason {
+    font-size: 12px;
+    color: #862e9c;
+    margin-top: 4px;
+  }
+  .reason b { font-weight: 700; }
   a.src { color: #3949ab; text-decoration: none; font-size: 12px; }
   a.src:hover { text-decoration: underline; }
   .empty { color: #9ca3af; padding: 20px; text-align: center; font-size: 13px; }
@@ -235,30 +244,60 @@ const lastUpdated = "2026-07-14";
 
 // 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (고시 탭, 건강보험 기준 1페이지)
 const notices = [
-  { cat:"행위", no:"2026-144", title:"자658 경피적 대동맥판삽입 급여기준", date:"2026-07-06", views:309 },
-  { cat:"행위", no:"2026-144", title:"자658주1 필터형 뇌색전 방어기구 거치술 급여기준", date:"2026-07-06", views:152 },
-  { cat:"약제", no:"2026-133", title:"Zastaprazan 경구제(품명: 자큐보정20밀리그램 등)", date:"2026-07-01", views:366 },
-  { cat:"약제", no:"2026-133", title:"Mepolizumab 주사제(품명: 누칼라주, 누칼라오토인젝터주)", date:"2026-07-01", views:248 },
-  { cat:"약제", no:"2026-133", title:"[일반원칙] 일회용 인공누액제 (Sodium hyaluronate 등 8개 성분)", date:"2026-07-01", views:353 },
-  { cat:"약제", no:"2026-133", title:"[일반원칙] 경구용 항뇌전증약", date:"2026-07-01", views:253 },
-  { cat:"약제", no:"2026-133", title:"Baricitinib 경구제(품명: 올루미언트정 2밀리그램 등)", date:"2026-07-01", views:325 },
-  { cat:"치료재료", no:"2026-140", title:"관절경 등의 수술 및 진단적 경검사에 사용된 치료재료 비용의 산정방법", date:"2026-07-01", views:244 },
-  { cat:"행위", no:"2026-136", title:"도수치료 [1일당] (Manual Therapy)의 급여기준", date:"2026-07-01", views:1206 },
-  { cat:"의료급여", no:"2026-138", title:"[의료급여] 보건복지부 고시 제2026-138호, 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:279 },
+  { cat:"행위", no:"2026-144", title:"자658 경피적 대동맥판삽입 급여기준", date:"2026-07-06", views:305,
+    excerpt:"자658 경피적 대동맥판삽입(TAVI)은 NYHA Class Ⅱ이상의 증상이 있는 중증 대동맥판협착증 환자를 대상으로 심장통합진료를 거쳐 시술 여부를 결정하여야 하며, 다음의 요건을 모두 충족한 경우에 요양급여를 인정함…",
+    reason:"①급여대상 변경, ②실시기관 인력 기준 완화, ③심장통합 진료 시 인적구성·인력기준 완화 및 의사결정구조 간소화",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=1&mtgHmeDd=20260706&sno=1&mtgMtrRegSno=0001&RN=1" },
+  { cat:"행위", no:"2026-144", title:"자658주1 필터형 뇌색전 방어기구 거치술 급여기준", date:"2026-07-06", views:150,
+    excerpt:"경피적 대동맥판 삽입술 시 필터형 뇌색전 방어기구 거치술을 실시할 경우 「선별급여 지정 및 실시 등에 관한 기준」에 따라 본인부담률 80%로 적용함…",
+    reason:"「자658 경피적 대동맥판 삽입 급여기준」 개정에 따른 변경",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=2&mtgHmeDd=20260706&sno=2&mtgMtrRegSno=0001&RN=2" },
+  { cat:"약제", no:"2026-133", title:"Zastaprazan 경구제(품명: 자큐보정20밀리그램 등)", date:"2026-07-01", views:362,
+    excerpt:"각 약제별 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. 가. 미란성 위식도역류질환의 치료 나. 위궤양의 치료",
+    reason:"교과서, 가이드라인, 임상연구문헌, 학회(전문가) 의견 등을 참조하여 위궤양에 급여 확대함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=3&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0005&RN=3" },
+  { cat:"약제", no:"2026-133", title:"Mepolizumab 주사제(품명: 누칼라주, 누칼라오토인젝터주)", date:"2026-07-01", views:247,
+    excerpt:"성인 중증 호산구성 천식 환자 중 고용량의 흡입용 코르티코스테로이드-장기지속형 흡입용 베타2 작용제(ICS-LABA)와 장기지속형 무스카린 길항제(LAMA)의 투여에도 불구하고 적절하게 조절이 되지 않는 경우 등에 요양급여를 인정함…",
+    reason:"장기 처방 시 발생할 수 있는 모니터링 공백을 최소화하고, 타 생물학적 제제와의 장기처방 기준의 형평성(일관성)을 위해 약제급여기준 소위원회 심의를 통해 변경함",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=4&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0004&RN=4" },
+  { cat:"약제", no:"2026-133", title:"[일반원칙] 일회용 인공누액제 (Sodium hyaluronate 등 8개 성분)", date:"2026-07-01", views:349,
+    excerpt:"각 약제의 세부사항 범위 및 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함. 건성안증후군에 사용하는 일회용 인공누액제는 동일 기전 내에서의 1종만 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함.",
+    reason:"Polyethylene glycol 400+Propyleneglycol(품명: 시스폴점안액)이 신규등재 예정임에 따라 동일 급여 기준으로 반영",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=5&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0003&RN=5" },
+  { cat:"약제", no:"2026-133", title:"[일반원칙] 경구용 항뇌전증약", date:"2026-07-01", views:252,
+    excerpt:"각 약제별 허가사항 범위(연령, 투여 방법 등) 중 뇌전증에 투여하는 경우 요양급여를 인정하며, 일반적으로 두 번째 뇌전증 발작 후 한 가지 약물로 시작함…",
+    reason:"브리베타정 등 29품목 약제가 신규 등재 예정임에 따라 급여기준 적용을 명확히 하고자 함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=6&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0002&RN=6" },
+  { cat:"약제", no:"2026-133", title:"Baricitinib 경구제(품명: 올루미언트정 2밀리그램 등)", date:"2026-07-01", views:323,
+    excerpt:"허가사항 범위 내에서 성인 류마티스 관절염, 만성 중증 아토피 피부염, 성인 중증 원형 탈모증 환자에 대한 투여기준에 따라 요양급여를 인정함…",
+    reason:"교과서, 가이드라인, 임상연구문헌, 전문가 의견 등을 고려하여 '중증 원형 탈모증'에 급여기준을 확대함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=7&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0001&RN=7" },
+  { cat:"치료재료", no:"2026-140", title:"관절경 등의 수술 및 진단적 경검사에 사용된 치료재료 비용의 산정방법", date:"2026-07-01", views:239,
+    excerpt:"관절경·복강경·흉강경하 수술시 사용하는 치료재료비용은 「치료재료 급여·비급여 목록 및 급여상한금액표」에서 정한 금액을 산정함…",
+    reason:"치료재료 중분류 신설에 따른 급여기준 개정",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=8&mtgHmeDd=20260701&sno=2&mtgMtrRegSno=0001&RN=8" },
+  { cat:"행위", no:"2026-136", title:"도수치료 [1일당] (Manual Therapy)의 급여기준", date:"2026-07-01", views:1188,
+    excerpt:"도수치료[1일당](Manual Therapy)는 30분 이상 실시를 원칙으로 하고, 기능이상 및 통증이 지속되는 근골격계 질환에 대해 부위 불문 주 2회 이내, 연간 총 15회를 초과하여 산정할 수 없음…",
+    reason:"도수치료 관리급여 전환에 따른 급여기준 신설",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=9&mtgHmeDd=20260701&sno=4&mtgMtrRegSno=0001&RN=9" },
+  { cat:"의료급여", no:"2026-138", title:"[의료급여] 보건복지부 고시 제2026-138호, 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:274,
+    excerpt:"사회보장 전산관리번호 개편에 따른 기존 관리번호 부여 규정 삭제, 의료급여비용명세서 내 본인부담 95% 항목 신설",
+    reason:null,
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=10&mtgHmeDd=20260701&sno=5&mtgMtrRegSno=0001&RN=10" },
 ];
 
 // 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (자료실 탭 1페이지)
 const archives = [
-  { cat:"행위", ref:"고시 제2026-144호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-06", views:213 },
-  { cat:"행위", ref:"고시 제2026-136호", title:"[공상] 공상수가파일('26.7.1.시행)_「산업재해보상보험법 시행령」 일부개정에 따른 수가 신설 등", date:"2026-07-02", views:147 },
-  { cat:"의료급여", ref:"보건복지부 고시 제2026-138호", title:"[의료급여] 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:140 },
-  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_재활의료기관 시범사업 등 안내", date:"2026-07-01", views:275 },
-  { cat:"행위", ref:"고시 제2026-142호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-01", views:75 },
-  { cat:"약제", ref:"보건복지부 고시 제2026-131호", title:"퇴장방지의약품 목록(2026년 7월)", date:"2026-06-30", views:281 },
-  { cat:"요양병원", ref:"고시 제2026-141호", title:"[요양병원] 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정", date:"2026-06-30", views:77 },
-  { cat:"치료재료", ref:"고시 제2026-140호", title:"[치료재료] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-30", views:178 },
-  { cat:"요양병원", ref:"보건복지부 고시 제2026-129호", title:"[요양병원] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-29", views:72 },
-  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_관리급여 신설 등 안내(전체판 포함)", date:"2026-06-29", views:1187 },
+  { cat:"행위", ref:"고시 제2026-144호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-06", views:208 },
+  { cat:"행위", ref:"고시 제2026-136호", title:"[공상] 공상수가파일('26.7.1.시행)_「산업재해보상보험법 시행령」 일부개정에 따른 수가 신설 등", date:"2026-07-02", views:144 },
+  { cat:"의료급여", ref:"보건복지부 고시 제2026-138호", title:"[의료급여] 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:137 },
+  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_재활의료기관 시범사업 등 안내", date:"2026-07-01", views:272 },
+  { cat:"행위", ref:"고시 제2026-142호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-01", views:73 },
+  { cat:"약제", ref:"보건복지부 고시 제2026-131호", title:"퇴장방지의약품 목록(2026년 7월)", date:"2026-06-30", views:275 },
+  { cat:"요양병원", ref:"고시 제2026-141호", title:"[요양병원] 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정", date:"2026-06-30", views:72 },
+  { cat:"치료재료", ref:"고시 제2026-140호", title:"[치료재료] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-30", views:173 },
+  { cat:"요양병원", ref:"보건복지부 고시 제2026-129호", title:"[요양병원] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-29", views:71 },
+  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_관리급여 신설 등 안내(전체판 포함)", date:"2026-06-29", views:1178 },
 ];
 
 const totals = { notice: 4578, archive: 6050 };
@@ -304,13 +343,20 @@ function renderNotices() {
     const relatedHtml = related.length
       ? `<div class="related">📎 관련 자료실: ${related.map(r=>r.title).join(" / ")}</div>`
       : "";
+    const excerptHtml = n.excerpt
+      ? `<div class="excerpt">${n.excerpt}</div>`
+      : "";
+    const reasonHtml = n.reason
+      ? `<div class="reason"><b>개정사유:</b> ${n.reason}</div>`
+      : "";
+    const linkUrl = n.popupUrl || sourceListUrl;
     tr.innerHTML = `
       <td><span class="${catClass(n.cat)}">${n.cat}</span></td>
       <td>고시 제${n.no}호</td>
-      <td>${n.title}${relatedHtml}</td>
+      <td>${n.title}${excerptHtml}${reasonHtml}${relatedHtml}</td>
       <td>${n.date}</td>
       <td>${n.views}</td>
-      <td><a class="src" href="${sourceListUrl}" target="_blank" rel="noopener">보기 ↗</a></td>
+      <td><a class="src" href="${linkUrl}" target="_blank" rel="noopener">본문 ↗</a></td>
     `;
     body.appendChild(tr);
   });
@@ -374,9 +420,9 @@ if (window.cowork && typeof window.cowork.runScheduledTask === "function") {
 // 분석 코멘트 (수집 데이터 기반 요약)
 const notes = document.getElementById("analysisNotes");
 notes.innerHTML = `
-  <p>이번 회차(2026-07-14 수집)는 직전 스냅샷과 동일한 고시 제2026-133호~144호 구간이 최신 목록 상단을 유지하고 있어, 신규로 등록된 고시는 확인되지 않았습니다.</p>
-  <p>다만 조회수는 전반적으로 소폭 증가했으며, 도수치료 급여기준(고시 제2026-136호)이 1,206건으로 여전히 가장 높은 관심을 받고 있습니다.</p>
-  <p>고시·자료실 전체 누적 건수(고시 4,578건, 자료실 6,050건)도 직전 수집과 동일하여, 이번 주는 안정적인 상태로 판단됩니다.</p>
+  <p>이번 수집분(2026-06-29 ~ 2026-07-06)은 고시 제2026-133호~144호 구간에 집중되어 있으며, 약제 분야 개정이 5건으로 가장 많고 행위·치료재료·의료급여 분야가 뒤를 이었습니다.</p>
+  <p>도수치료 급여기준(고시 제2026-136호)은 조회수 1,188건으로 이번 수집분 중 가장 높은 관심을 받았으며, 관련 자료실에는 산재보상 수가파일 개정 자료가 함께 게시되었습니다.</p>
+  <p>경피적 대동맥판삽입 및 필터형 뇌색전 방어기구(고시 제2026-144호)는 자료실의 '요양급여 적용기준 세부사항' 개정 자료와 직접 연계되어, 세부 산정기준 확인 시 두 자료를 함께 참고하는 것이 좋습니다.</p>
 `;
 </script>
 
