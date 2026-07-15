@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Hira Notice Dashboard",
+  "schemaVersion": 1,
+  "description": "건강보험심사평가원 제도·정책 > 보험인정기준(고시/자료실) 최신 개정사항 모니터링 대시보드. 분야별 필터/검색, 고시-자료실 연계, 분석 코멘트 제공."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>심사평가원 보험인정기준 고시·자료실 모니터링</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+    background: #f7f8fa;
+    color: #1f2328;
+    padding: 24px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #6b7280; font-size: 13px; }
+  .badge {
+    display: inline-block;
+    background: #eef2ff;
+    color: #3949ab;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .kpi .num { font-size: 22px; font-weight: 700; }
+  .kpi .label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .panel h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .controls select, .controls input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  .controls input { flex: 1; min-width: 180px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef0f2; vertical-align: top; }
+  th { color: #6b7280; font-weight: 600; font-size: 12px; background: #fafbfc; }
+  tr:hover { background: #f9fafb; }
+  .cat-tag {
+    display: inline-block;
+    background: #f1f3f5;
+    color: #495057;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .cat-약제 { background: #e7f5ff; color: #1971c2; }
+  .cat-치료재료 { background: #fff4e6; color: #e8590c; }
+  .cat-행위 { background: #ebfbee; color: #2b8a3e; }
+  .cat-의료급여 { background: #f3f0ff; color: #6741d9; }
+  .cat-요양병원 { background: #fff0f6; color: #c2255c; }
+  .related {
+    font-size: 12px;
+    color: #495057;
+    margin-top: 4px;
+  }
+  .related a { color: #3949ab; text-decoration: none; }
+  .related a:hover { text-decoration: underline; }
+  .excerpt {
+    font-size: 12px;
+    color: #495057;
+    margin-top: 6px;
+    line-height: 1.6;
+    background: #f8f9fa;
+    border-left: 3px solid #dee2e6;
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .reason {
+    font-size: 12px;
+    color: #862e9c;
+    margin-top: 4px;
+  }
+  .reason b { font-weight: 700; }
+  .briefing-list { display: flex; flex-direction: column; gap: 8px; }
+  .briefing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .briefing-item .period { font-weight: 600; }
+  .briefing-item .links a {
+    color: #3949ab;
+    text-decoration: none;
+    font-size: 12px;
+    margin-left: 12px;
+  }
+  .briefing-item .links a:hover { text-decoration: underline; }
+  a.src { color: #3949ab; text-decoration: none; font-size: 12px; }
+  a.src:hover { text-decoration: underline; }
+  .empty { color: #9ca3af; padding: 20px; text-align: center; font-size: 13px; }
+  .notes p { font-size: 13px; line-height: 1.7; margin: 0 0 8px; color: #343a40; }
+  .footer {
+    font-size: 12px;
+    color: #6b7280;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 14px;
+    line-height: 1.7;
+  }
+  .footer .disclaimer {
+    background: #fff9db;
+    border: 1px solid #ffe066;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #5c5602;
+    margin-bottom: 10px;
+  }
+  .headerRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  #refreshBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3949ab;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #refreshBtn:disabled { background: #9ca3af; cursor: default; }
+  #refreshStatus { font-size: 11px; color: #6b7280; text-align: right; max-width: 220px; }
+  .latest-briefing-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #3949ab;
+    text-decoration: none;
+    font-weight: 600;
+    background: #eef2ff;
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+  .latest-briefing-link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div>
+      <h1>심사평가원 보험인정기준 고시·자료실 모니터링</h1>
+      <div class="sub">제도·정책 &gt; 보험인정기준 (건강보험) 기준 · 최종 수집일 <span id="lastUpdated"></span></div>
+      <a id="latestBriefingLink" class="latest-briefing-link" href="#" target="_blank" rel="noopener" style="display:none">📰 최신 주간 브리핑 웹페이지 보기 →</a>
+    </div>
+    <div class="headerRight">
+      <span class="badge">자동 확인: 매주 월요일 오전 9시</span>
+      <button id="refreshBtn">🔄 지금 갱신하기</button>
+      <div id="refreshStatus"></div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="num" id="kpiNotice">-</div><div class="label">전체 고시 건수 (누적)</div></div>
+    <div class="kpi"><div class="num" id="kpiArchive">-</div><div class="label">전체 자료실 자료 (누적)</div></div>
+    <div class="kpi"><div class="num" id="kpiRecent">-</div><div class="label">최근 수집분 신규 고시</div></div>
+    <div class="kpi"><div class="num" id="kpiCats">-</div><div class="label">분류 카테고리 수</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>📌 최근 고시 목록</h2>
+    <div class="controls">
+      <select id="catFilter"></select>
+      <input id="searchBox" type="text" placeholder="고시번호, 제목 키워드로 검색">
+    </div>
+    <table id="noticeTable">
+      <thead>
+        <tr>
+          <th style="width:90px">분류</th>
+          <th style="width:120px">고시번호</th>
+          <th>제목</th>
+          <th style="width:90px">작성일</th>
+          <th style="width:60px">조회수</th>
+          <th style="width:70px">원문</th>
+        </tr>
+      </thead>
+      <tbody id="noticeBody"></tbody>
+    </table>
+    <div class="empty" id="noticeEmpty" style="display:none">조건에 맞는 고시가 없습니다.</div>
+  </div>
+
+  <div class="panel">
+    <h2>🗂 최근 자료실 등록 자료</h2>
+    <div class="controls">
+      <select id="archCatFilter"></select>
+      <input id="archSearchBox" type="text" placeholder="관련근거, 제목 키워드로 검색">
+    </div>
+    <table id="archiveTable">
+      <thead>
+        <tr>
+          <th style="width:90px">분류</th>
+          <th style="width:150px">관련근거</th>
+          <th>제목</th>
+          <th style="width:90px">게시일</th>
+          <th style="width:60px">조회수</th>
+        </tr>
+      </thead>
+      <tbody id="archiveBody"></tbody>
+    </table>
+    <div class="empty" id="archiveEmpty" style="display:none">조건에 맞는 자료가 없습니다.</div>
+  </div>
+
+  <div class="panel notes">
+    <h2>🔍 이번 수집분 분석 코멘트</h2>
+    <div id="analysisNotes"></div>
+  </div>
+
+  <div class="panel">
+    <h2>🗞 주간 브리핑 아카이브 (워드/웹페이지)</h2>
+    <div id="briefingList" class="briefing-list"></div>
+    <div class="empty" id="briefingEmpty" style="display:none">아직 생성된 주간 브리핑이 없습니다.</div>
+  </div>
+
+  <div class="footer">
+    <div class="disclaimer">
+      위 내용은 심사평가원 고시 기준으로 분석된 의견을 제시하는 것으로 명확한 심사관련 내용은 심사평가원에 질의 하여 주십시오.
+    </div>
+    데이터 출처: 건강보험심사평가원 홈페이지 &gt; 제도·정책 &gt; 보험인정기준 (고시 / 자료실)<br>
+    원문 목록 바로가기: <a class="src" href="https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrList.do?pgmid=HIRAA030069000400" target="_blank" rel="noopener">보험인정기준 검색 페이지</a><br>
+    담당부서(심사평가원): 기준운영부 033-739-4704
+  </div>
+
+</div>
+
+<script>
+const lastUpdated = "2026-07-14";
+
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (고시 탭, 건강보험 기준 1페이지)
+const notices = [
+  { cat:"행위", no:"2026-144", title:"자658 경피적 대동맥판삽입 급여기준", date:"2026-07-06", views:305,
+    excerpt:"자658 경피적 대동맥판삽입(TAVI)은 NYHA Class Ⅱ이상의 증상이 있는 중증 대동맥판협착증 환자를 대상으로 심장통합진료를 거쳐 시술 여부를 결정하여야 하며, 다음의 요건을 모두 충족한 경우에 요양급여를 인정함…",
+    reason:"①급여대상 변경, ②실시기관 인력 기준 완화, ③심장통합 진료 시 인적구성·인력기준 완화 및 의사결정구조 간소화",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=1&mtgHmeDd=20260706&sno=1&mtgMtrRegSno=0001&RN=1" },
+  { cat:"행위", no:"2026-144", title:"자658주1 필터형 뇌색전 방어기구 거치술 급여기준", date:"2026-07-06", views:150,
+    excerpt:"경피적 대동맥판 삽입술 시 필터형 뇌색전 방어기구 거치술을 실시할 경우 「선별급여 지정 및 실시 등에 관한 기준」에 따라 본인부담률 80%로 적용함…",
+    reason:"「자658 경피적 대동맥판 삽입 급여기준」 개정에 따른 변경",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=2&mtgHmeDd=20260706&sno=2&mtgMtrRegSno=0001&RN=2" },
+  { cat:"약제", no:"2026-133", title:"Zastaprazan 경구제(품명: 자큐보정20밀리그램 등)", date:"2026-07-01", views:362,
+    excerpt:"각 약제별 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. 가. 미란성 위식도역류질환의 치료 나. 위궤양의 치료",
+    reason:"교과서, 가이드라인, 임상연구문헌, 학회(전문가) 의견 등을 참조하여 위궤양에 급여 확대함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=3&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0005&RN=3" },
+  { cat:"약제", no:"2026-133", title:"Mepolizumab 주사제(품명: 누칼라주, 누칼라오토인젝터주)", date:"2026-07-01", views:247,
+    excerpt:"성인 중증 호산구성 천식 환자 중 고용량의 흡입용 코르티코스테로이드-장기지속형 흡입용 베타2 작용제(ICS-LABA)와 장기지속형 무스카린 길항제(LAMA)의 투여에도 불구하고 적절하게 조절이 되지 않는 경우 등에 요양급여를 인정함…",
+    reason:"장기 처방 시 발생할 수 있는 모니터링 공백을 최소화하고, 타 생물학적 제제와의 장기처방 기준의 형평성(일관성)을 위해 약제급여기준 소위원회 심의를 통해 변경함",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=4&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0004&RN=4" },
+  { cat:"약제", no:"2026-133", title:"[일반원칙] 일회용 인공누액제 (Sodium hyaluronate 등 8개 성분)", date:"2026-07-01", views:349,
+    excerpt:"각 약제의 세부사항 범위 및 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함. 건성안증후군에 사용하는 일회용 인공누액제는 동일 기전 내에서의 1종만 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함.",
+    reason:"Polyethylene glycol 400+Propyleneglycol(품명: 시스폴점안액)이 신규등재 예정임에 따라 동일 급여 기준으로 반영",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=5&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0003&RN=5" },
+  { cat:"약제", no:"2026-133", title:"[일반원칙] 경구용 항뇌전증약", date:"2026-07-01", views:252,
+    excerpt:"각 약제별 허가사항 범위(연령, 투여 방법 등) 중 뇌전증에 투여하는 경우 요양급여를 인정하며, 일반적으로 두 번째 뇌전증 발작 후 한 가지 약물로 시작함…",
+    reason:"브리베타정 등 29품목 약제가 신규 등재 예정임에 따라 급여기준 적용을 명확히 하고자 함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=6&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0002&RN=6" },
+  { cat:"약제", no:"2026-133", title:"Baricitinib 경구제(품명: 올루미언트정 2밀리그램 등)", date:"2026-07-01", views:323,
+    excerpt:"허가사항 범위 내에서 성인 류마티스 관절염, 만성 중증 아토피 피부염, 성인 중증 원형 탈모증 환자에 대한 투여기준에 따라 요양급여를 인정함…",
+    reason:"교과서, 가이드라인, 임상연구문헌, 전문가 의견 등을 고려하여 '중증 원형 탈모증'에 급여기준을 확대함.",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=7&mtgHmeDd=20260701&sno=1&mtgMtrRegSno=0001&RN=7" },
+  { cat:"치료재료", no:"2026-140", title:"관절경 등의 수술 및 진단적 경검사에 사용된 치료재료 비용의 산정방법", date:"2026-07-01", views:239,
+    excerpt:"관절경·복강경·흉강경하 수술시 사용하는 치료재료비용은 「치료재료 급여·비급여 목록 및 급여상한금액표」에서 정한 금액을 산정함…",
+    reason:"치료재료 중분류 신설에 따른 급여기준 개정",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=8&mtgHmeDd=20260701&sno=2&mtgMtrRegSno=0001&RN=8" },
+  { cat:"행위", no:"2026-136", title:"도수치료 [1일당] (Manual Therapy)의 급여기준", date:"2026-07-01", views:1188,
+    excerpt:"도수치료[1일당](Manual Therapy)는 30분 이상 실시를 원칙으로 하고, 기능이상 및 통증이 지속되는 근골격계 질환에 대해 부위 불문 주 2회 이내, 연간 총 15회를 초과하여 산정할 수 없음…",
+    reason:"도수치료 관리급여 전환에 따른 급여기준 신설",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=9&mtgHmeDd=20260701&sno=4&mtgMtrRegSno=0001&RN=9" },
+  { cat:"의료급여", no:"2026-138", title:"[의료급여] 보건복지부 고시 제2026-138호, 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:274,
+    excerpt:"사회보장 전산관리번호 개편에 따른 기존 관리번호 부여 규정 삭제, 의료급여비용명세서 내 본인부담 95% 항목 신설",
+    reason:null,
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=10&mtgHmeDd=20260701&sno=5&mtgMtrRegSno=0001&RN=10" },
+];
+
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (자료실 탭 1페이지)
+const archives = [
+  { cat:"행위", ref:"고시 제2026-144호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-06", views:208 },
+  { cat:"행위", ref:"고시 제2026-136호", title:"[공상] 공상수가파일('26.7.1.시행)_「산업재해보상보험법 시행령」 일부개정에 따른 수가 신설 등", date:"2026-07-02", views:144 },
+  { cat:"의료급여", ref:"보건복지부 고시 제2026-138호", title:"[의료급여] 「의료급여수가의 기준 및 일반기준」 일부개정", date:"2026-07-01", views:137 },
+  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_재활의료기관 시범사업 등 안내", date:"2026-07-01", views:272 },
+  { cat:"행위", ref:"고시 제2026-142호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-01", views:73 },
+  { cat:"약제", ref:"보건복지부 고시 제2026-131호", title:"퇴장방지의약품 목록(2026년 7월)", date:"2026-06-30", views:275 },
+  { cat:"요양병원", ref:"고시 제2026-141호", title:"[요양병원] 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정", date:"2026-06-30", views:72 },
+  { cat:"치료재료", ref:"고시 제2026-140호", title:"[치료재료] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-30", views:173 },
+  { cat:"요양병원", ref:"보건복지부 고시 제2026-129호", title:"[요양병원] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-06-29", views:71 },
+  { cat:"행위", ref:"고시 제2026-134호", title:"[행위] 의·치과 수가파일('26.7.1.)_관리급여 신설 등 안내(전체판 포함)", date:"2026-06-29", views:1178 },
+];
+
+// 주간 워드/웹페이지 브리핑 아카이브 (예약 작업이 매주 항목을 추가)
+const briefings = [
+  { periodStart:"2026-06-29", periodEnd:"2026-07-06", generatedOn:"2026-07-14",
+    htmlUrl:"briefings/2026-06-29_2026-07-06.html" },
+];
+
+const totals = { notice: 4578, archive: 6050 };
+const allCategories = ["전체","청구관련기준자료","포괄수가제","의료급여","완화의료","약제","자동차보험","심사사후관리","치료재료","행위","DUR","응급대불","산정특례","요양병원","퇴장방지의약품","청구방법","마스터파일"];
+const sourceListUrl = "https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrList.do?pgmid=HIRAA030069000400";
+
+document.getElementById("lastUpdated").textContent = lastUpdated;
+document.getElementById("kpiNotice").textContent = totals.notice.toLocaleString();
+document.getElementById("kpiArchive").textContent = totals.archive.toLocaleString();
+document.getElementById("kpiRecent").textContent = notices.length;
+document.getElementById("kpiCats").textContent = allCategories.length - 1;
+
+function fillSelect(id, cats) {
+  const sel = document.getElementById(id);
+  sel.innerHTML = "";
+  cats.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+fillSelect("catFilter", ["전체", ...Array.from(new Set(notices.map(n=>n.cat)))]);
+fillSelect("archCatFilter", ["전체", ...Array.from(new Set(archives.map(a=>a.cat)))]);
+
+function catClass(cat) {
+  return "cat-tag cat-" + cat;
+}
+
+function renderNotices() {
+  const cat = document.getElementById("catFilter").value;
+  const q = document.getElementById("searchBox").value.trim().toLowerCase();
+  const body = document.getElementById("noticeBody");
+  body.innerHTML = "";
+  const filtered = notices.filter(n => {
+    const okCat = cat === "전체" || n.cat === cat;
+    const okQ = !q || n.title.toLowerCase().includes(q) || n.no.includes(q);
+    return okCat && okQ;
+  });
+  document.getElementById("noticeEmpty").style.display = filtered.length ? "none" : "block";
+  filtered.forEach(n => {
+    const tr = document.createElement("tr");
+    const related = archives.filter(a => a.ref.includes(n.no));
+    const relatedHtml = related.length
+      ? `<div class="related">📎 관련 자료실: ${related.map(r=>r.title).join(" / ")}</div>`
+      : "";
+    const excerptHtml = n.excerpt
+      ? `<div class="excerpt">${n.excerpt}</div>`
+      : "";
+    const reasonHtml = n.reason
+      ? `<div class="reason"><b>개정사유:</b> ${n.reason}</div>`
+      : "";
+    const linkUrl = n.popupUrl || sourceListUrl;
+    tr.innerHTML = `
+      <td><span class="${catClass(n.cat)}">${n.cat}</span></td>
+      <td>고시 제${n.no}호</td>
+      <td>${n.title}${excerptHtml}${reasonHtml}${relatedHtml}</td>
+      <td>${n.date}</td>
+      <td>${n.views}</td>
+      <td><a class="src" href="${linkUrl}" target="_blank" rel="noopener">본문 ↗</a></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function renderArchives() {
+  const cat = document.getElementById("archCatFilter").value;
+  const q = document.getElementById("archSearchBox").value.trim().toLowerCase();
+  const body = document.getElementById("archiveBody");
+  body.innerHTML = "";
+  const filtered = archives.filter(a => {
+    const okCat = cat === "전체" || a.cat === cat;
+    const okQ = !q || a.title.toLowerCase().includes(q) || a.ref.toLowerCase().includes(q);
+    return okCat && okQ;
+  });
+  document.getElementById("archiveEmpty").style.display = filtered.length ? "none" : "block";
+  filtered.forEach(a => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><span class="${catClass(a.cat)}">${a.cat}</span></td>
+      <td>${a.ref}</td>
+      <td>${a.title}</td>
+      <td>${a.date}</td>
+      <td>${a.views}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+["catFilter","searchBox"].forEach(id => document.getElementById(id).addEventListener("input", renderNotices));
+["archCatFilter","archSearchBox"].forEach(id => document.getElementById(id).addEventListener("input", renderArchives));
+
+renderNotices();
+renderArchives();
+
+function renderBriefings() {
+  const list = document.getElementById("briefingList");
+  const sorted = [...briefings].sort((a, b) => b.periodStart.localeCompare(a.periodStart));
+  document.getElementById("briefingEmpty").style.display = sorted.length ? "none" : "block";
+  list.innerHTML = "";
+  sorted.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "briefing-item";
+    div.innerHTML = `
+      <span class="period">${b.periodStart} ~ ${b.periodEnd}</span>
+      <span class="links">
+        <a href="${b.htmlUrl}" target="_blank" rel="noopener">웹페이지로 보기 ↗</a>
+      </span>
+    `;
+    list.appendChild(div);
+  });
+  // 헤더 영역에도 최신 브리핑 바로가기 링크를 노출 (스크롤 없이 바로 확인 가능하도록)
+  const topLink = document.getElementById("latestBriefingLink");
+  if (sorted.length) {
+    topLink.href = sorted[0].htmlUrl;
+    topLink.textContent = `📰 최신 주간 브리핑 웹페이지 보기 (${sorted[0].periodStart} ~ ${sorted[0].periodEnd}) →`;
+    topLink.style.display = "inline-block";
+  } else {
+    topLink.style.display = "none";
+  }
+}
+renderBriefings();
+
+// 예약된 작업("hira-notice-monitor") 수동 실행 버튼
+const refreshBtn = document.getElementById("refreshBtn");
+const refreshStatus = document.getElementById("refreshStatus");
+const SCHEDULED_TASK_ID = "hira-notice-monitor";
+
+if (window.cowork && typeof window.cowork.runScheduledTask === "function") {
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.disabled = true;
+    refreshStatus.textContent = "예약 작업 실행 요청 중...";
+    try {
+      await window.cowork.runScheduledTask(SCHEDULED_TASK_ID);
+      refreshStatus.textContent = "요청 완료. 작업이 끝나면 이 페이지가 최신 데이터로 갱신됩니다.";
+    } catch (e) {
+      console.error("runScheduledTask failed", e);
+      refreshStatus.textContent = "실행 실패: " + (e && e.message ? e.message : "알 수 없는 오류");
+      refreshBtn.disabled = false;
+    }
+  });
+} else {
+  // Cowork 아티팩트 환경이 아닌 경우(단일 HTML 파일로 열람 시) 버튼 비활성화
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = "🔒 갱신하기 (Cowork 앱에서만 가능)";
+  refreshStatus.textContent = "이 기능은 Cowork 아티팩트로 열었을 때만 동작합니다.";
+}
+
+// 분석 코멘트 (수집 데이터 기반 요약)
+const notes = document.getElementById("analysisNotes");
+notes.innerHTML = `
+  <p>이번 수집분(2026-06-29 ~ 2026-07-06)은 고시 제2026-133호~144호 구간에 집중되어 있으며, 약제 분야 개정이 5건으로 가장 많고 행위·치료재료·의료급여 분야가 뒤를 이었습니다.</p>
+  <p>도수치료 급여기준(고시 제2026-136호)은 조회수 1,188건으로 이번 수집분 중 가장 높은 관심을 받았으며, 관련 자료실에는 산재보상 수가파일 개정 자료가 함께 게시되었습니다.</p>
+  <p>경피적 대동맥판삽입 및 필터형 뇌색전 방어기구(고시 제2026-144호)는 자료실의 '요양급여 적용기준 세부사항' 개정 자료와 직접 연계되어, 세부 산정기준 확인 시 두 자료를 함께 참고하는 것이 좋습니다.</p>
+`;
+</script>
+
+</body>
+</html>
