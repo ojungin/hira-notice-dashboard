@@ -302,68 +302,68 @@
 </div>
 
 <script>
-const lastUpdated = "2026-08-11";
+const lastUpdated = "2026-09-01";
 
-// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (고시 탭, 건강보험 기준 1페이지) - 2026-08-11 수집
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (고시 탭, 건강보험 기준 1페이지) - 2026-09-01 수집
 const notices = [
-  { cat:"약제", no:"2026-159", title:"Empagliflozin 경구제(품명: 자디앙정 10밀리그램 등)", date:"2026-08-01", views:335,
-    excerpt:"1. 제2형 당뇨병에 투여 시 [일반원칙] 당뇨병용제 “세부사항” 범위 내에서 요양급여를 인정함. 2. 허가사항 범위 내에서 상기 1. 이외에 비당뇨 환자에게 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함…",
-    reason:"교과서, 가이드라인, 임상논문, 학회(전문가) 의견 등을 참조하여, 만성 신장병에 급여 범위를 확대함.",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=1&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0007&RN=1" },
-  { cat:"약제", no:"2026-159", title:"Obinutuzumab 주사제(품명: 가싸이바주)", date:"2026-08-01", views:139,
-    excerpt:"허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. - 아 래 - ○ 항암요법에 투여 시 「암환자에게 처방·투여하는 약제에 대한 요양급여의 적용기준 및 방법에 관한 세부사항」범위 내에서 사용하는 경우",
-    reason:"오비누투주맙 주사제의 추가된 식약처 허가사항에 대해 전액 본인 부담으로 투여 가능함을 명확히 함",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=2&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0006&RN=2" },
-  { cat:"약제", no:"2026-159", title:"Tenecteplase 주사제(품명: 메탈라제주 25밀리그램)", date:"2026-08-01", views:152,
-    excerpt:"허가사항 범위(성인의 급성 허혈성 뇌졸중에 증상 발현 후 4.5시간 이내에 투여한 경우) 내에 투여 시 요양급여를 인정함.",
-    reason:"Tenecteplase 주사제(품명: 메탈라제주 25mg)가 신규 등재 예정임에 따라 교과서, 가이드라인, 임상논문, 학회 및 전문가의견, 제외국 평가결과 등을 참조하여 급여기준을 신설함",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=3&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0001&RN=3" },
-  { cat:"약제", no:"2026-159", title:"Pegcetacoplan 주사제(품명: 엠파벨리주)", date:"2026-08-01", views:143,
-    excerpt:"1. 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. -아 래- ○발작성 야간 혈색소뇨증(PNH: Paroxysmal Nocturnal Hemoglobinuria) 1) 투여대상: 다음 가), 나) 조건 중 하나에 해당하는 경우…",
-    reason:"교과서, 가이드라인, 임상연구문헌, 전문가 의견 등을 참조하여 장기처방 기준을 변경함.",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=4&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0002&RN=4" },
-  { cat:"약제", no:"2026-159", title:"Emicizumab 주사제(품명: 헴리브라피하주사 30mg 등)", date:"2026-08-01", views:151,
-    excerpt:"허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. - 아 래 - 1. 제8인자 항체를 보유한 중증(응고인자 활성도가 1% 미만) A형 혈우병 환자 가. 투여대상…",
-    reason:"교과서, 가이드라인, 임상연구문헌, 전문가 의견 등을 참조하여 비항체 환자의 투여중지 기준 및 8인자제제와 동시 처방 기준을 명확화하고 부하용량 원내투여 조건 기준을 변경함.",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=5&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0003&RN=5" },
-  { cat:"약제", no:"2026-159", title:"Romiplostim 주사제(품명: 로미플레이트주250마이크로그램)", date:"2026-08-01", views:188,
-    excerpt:"1. 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에 투여하는 경우에는 약값 전액을 환자가 부담토록 함. - 아 래 - 가. 성인의 만성 면역성(특발성) 혈소판 감소성 자반증 1) 투여대상: corticosteroid와 immunoglobulin에 불응인 환자…",
-    reason:"교과서, 가이드라인, 임상연구문헌, 전문가 의견 등을 참조하여 이전에 치료경험이 없는 중증 재생불량성 빈혈 환자에서 면역억제요법과 병용 치료에 급여 확대함",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=6&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0004&RN=6" },
-  { cat:"약제", no:"2026-159", title:"Dupilumab 주사제(품명: 듀피젠트프리필드주300밀리그램 등)", date:"2026-08-01", views:216,
-    excerpt:"각 약제별 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함. - 아 래 - 1. 만성 중증 아토피피부염 가. 투여대상 1) 성인 및 청소년…",
-    reason:"장기 처방 시 발생할 수 있는 모니터링 공백을 최소화하고, 타 생물학적 제제와의 장기처방 기준의 형평성(일관성)을 위해 변경함",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=7&mtgHmeDd=20260801&sno=1&mtgMtrRegSno=0005&RN=7" },
-  { cat:"행위", no:"2026-166", title:"누533 항-Infliximab 항체[정밀면역검사](정량)의 급여기준", date:"2026-08-01", views:185,
-    excerpt:"누533 항-Infliximab 항체[정밀면역검사](정량) 검사는 Infliximab 약물치료 중인 환자의 Infliximab 혈중농도가 3.0㎍/㎖ 미만으로 확인되어 실시한 경우, 다음과 같이 요양급여를 인정함 - 다 음 - 1. 염증성 장질환(크론병, 궤양성 대장염) 환자는 「선별급여 지정 및 실시 등에 관한 기준」에 따라 본인부담률 50%로 적용함…",
-    reason:"선별급여 적합성평가 결과에 따른 급여기준 개정",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=8&mtgHmeDd=20260801&sno=2&mtgMtrRegSno=0001&RN=8" },
-  { cat:"행위", no:"2026-166", title:"나725다(2) 심전도검사-48시간 초과 홀터기록 검사의 급여기준", date:"2026-08-01", views:222,
-    excerpt:"48시간 초과 홀터기록 검사인 나725다(2) 심전도 검사-심전도 감시-홀터기록 나) 48시간 초과 7일 이내와 다) 7일 초과 14일 이내는 「선별급여 지정 및 실시 등에 관한 기준」에 따라 다음과 같은 경우에 본인부담률 80%를 적용함…",
-    reason:"선별급여 적합성 평가 결과에 따른 급여기준 개정",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=9&mtgHmeDd=20260801&sno=3&mtgMtrRegSno=0001&RN=9" },
-  { cat:"치료재료", no:"2026-166", title:"내시경하 담췌관 ACCESS CATHETER의 급여기준", date:"2026-08-01", views:67,
-    excerpt:"도관 기반의 담(췌)관경 검사 및 역행성 담췌관 내시경 수술 시 사용하는 내시경하 담췌관 ACCESS CATHETER는 다음과 같은 경우「선별급여 지정 및 실시 등에 관한 기준」에 따라 본인부담률 50%로 요양급여를 인정함…",
-    reason:"내시경하 담췌관 ACCESS CATHETER 선별급여 본인부담률 80% → 50% 변경",
-    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=10&mtgHmeDd=20260801&sno=4&mtgMtrRegSno=0002&RN=10" },
+  { cat:"치료재료", no:"2026-178", title:"희소·필수 치료재료(MASTERS SERIES MECHANICAL HEART VALVE)의 급여기준", date:"2026-09-01", views:45,
+    excerpt:"MASTERS SERIES MECHANICAL HEART VALVE는 희소ㆍ필수치료재료로, 식품의약품안전처장이 인정한 범위 내에서 아래의 경우 요양급여를 인정함. 해당코드는 G2012001이며, 사용목적은 원래의 심장판막의 기능을 대신할 수 있는 기구(소아용)임. (고시 제2026-178호, 2026.9.1.시행)",
+    reason:"제품명 변경에 따른 급여기준 개정",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=1&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0002&RN=1" },
+  { cat:"치료재료", no:"2026-178", title:"희소·필수 치료재료(MAGEC SPINAL BRACING AND DISTRACTION SYSTEM)의 급여기준", date:"2026-09-01", views:45,
+    excerpt:"MAGEC SPINAL BRACING AND DISTRACTION SYSTEM은 희소·필수 치료재료로, 조기발병 척추측만증으로 인해 흉곽 부전 증후군(TIS)이 동반되었거나 그 위험이 있는 골격적으로 미성숙한 환자의 중증 진행성 척추 변형(예: Cobb 각도 30도 이상, 흉추 높이 22cm 미만)에 사용됨…",
+    reason:"치료재료 신규 등재에 따른 급여기준 개정",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=2&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0001&RN=2" },
+  { cat:"치료재료", no:"2026-178", title:"자44-1 자성 조절 가능 성장형 금속봉을 이용한 척추교정술의 급여기준", date:"2026-09-01", views:40,
+    excerpt:"2세 이상 10세 이하의 조기 발현형 척추 측만증 환자를 대상으로 40도 이상의 만곡이 있는 특발성 측만증, 선천성 측만증, 흉추부의 전만곡이 동반된 측만증 중 하나에 해당하는 경우 삽입술에 대해 요양급여를 인정하며, 연장술·제거술 기준도 함께 규정함…",
+    reason:"치료재료 신규 등재에 따른 급여기준 개정",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=3&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0003&RN=3" },
+  { cat:"약제", no:"2026-176", title:"Budesonide+ Formoterol fumarate + Glycopyrronium bromide 흡입제(품명:브레즈트리에어로스피어흡입제160/7.2/5.0마이크로그램)", date:"2026-09-01", views:19,
+    excerpt:"중등도 이상의 성인(만 18세 이상) 만성폐쇄성폐질환 환자 중 지속성 베타2-효능약과 지속성 무스카린 수용체 길항제 복합요법에도 불구하고 FEV1이 예상 정상치의 60% 미만이거나 연 2회 이상 급성악화가 발생한 경우 등에 요양급여를 인정함…",
+    reason:"신규 등재 예정에 따라 교과서·가이드라인·임상논문 등을 참조하여 급여기준을 신설함",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=4&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0004&RN=4" },
+  { cat:"약제", no:"2026-176", title:"Vibegron 경구제(품명 : 베오바정50밀리그램)", date:"2026-09-01", views:19,
+    excerpt:"과민성 방광의 배뇨 절박감, 빈뇨 및 절박성 요실금 증상의 치료(허가사항 범위) 내에서 투여 시 요양급여를 인정함.",
+    reason:"신규 등재 예정에 따라 급여기준을 신설함",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=5&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0005&RN=5" },
+  { cat:"약제", no:"2026-176", title:"Golimumab 주사제(품명: 심퍼니프리필드시린지주 50밀리그램 등)", date:"2026-09-01", views:18,
+    excerpt:"성인의 활동성 및 진행성 류마티스관절염, 건선성 관절염, 강직성척추염, 궤양성대장염, 비방사선 축성 척추관절염 등에 대해 세부 평가기준 충족 시 요양급여를 인정함…",
+    reason:"비방사선 축성 척추관절염에 급여 확대(교과서·가이드라인·임상연구문헌·학회 의견 참조)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=6&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0006&RN=6" },
+  { cat:"약제", no:"2026-176", title:"Ixekizumab 주사제(품명: 탈츠프리필드시린지주 등)", date:"2026-09-01", views:18,
+    excerpt:"건선, 건선성 관절염, 강직성척추염, 비방사선 축성 척추관절염 환자에 대해 세부 평가기준 충족 시 요양급여를 인정함…",
+    reason:"비방사선 축성 척추관절염에 급여 확대",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=7&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0008&RN=7" },
+  { cat:"약제", no:"2026-176", title:"follitropin-α + lutropin α(r-hLH) 복합주사제(품명: 퍼고베리스주 등)", date:"2026-09-01", views:17,
+    excerpt:"저성선자극호르몬성 성선부전증 여성의 배란유도 또는 보조생식술에 사용 시 요양급여를 인정하며, 품명에 '등' 추가 및 세부인정기준 단위 표기(바이알→IU)를 변경함…",
+    reason:"요양급여 신규등재에 따른 급여기준 변경(품명 및 단위 표기 변경)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=8&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0009&RN=8" },
+  { cat:"약제", no:"2026-176", title:"Adalimumab 주사제(품명: 휴미라주 등)", date:"2026-09-01", views:19,
+    excerpt:"류마티스관절염, 소아 특발성 관절염, 건선성 관절염, 강직성척추염, 크론병, 건선, 궤양성대장염, 베체트 장염, 화농성 한선염, 비감염성 포도막염, 비방사선 축성 척추관절염 등 다양한 적응증에 대해 세부기준 충족 시 요양급여를 인정함…",
+    reason:"비방사선 축성 척추관절염에 급여 확대",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=9&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0010&RN=9" },
+  { cat:"약제", no:"2026-176", title:"Etanercept 주사제(품명: 엔브렐주사 등)", date:"2026-09-01", views:20,
+    excerpt:"류마티스관절염, 소아 특발성 관절염, 건선성 관절염, 강직성척추염, 건선, 비방사선 축성 척추관절염 등에 대해 세부기준 충족 시 요양급여를 인정함…",
+    reason:"비방사선 축성 척추관절염에 급여 확대",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=10&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0011&RN=10" },
 ];
 
-// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (자료실 탭 1페이지) - 2026-08-11 재수집
-// 지난주(2026-08-04~2026-08-10) 게시분: 질병군 별도보상 코드 목록 2건 (NEW)
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (자료실 탭 1페이지) - 2026-09-01 재수집
+// 지난 수집(08-24) 대비 신규(08-27~08-31 게시): 고시 제2026-173/175/176/177/178/179호 관련 자료 7건
 const archives = [
-  { cat:"치료재료", ref:"-", title:"[질병군] 치료재료 별도보상 코드 목록('26.8.1. 기준)", date:"2026-08-04", views:105, isNew:true },
-  { cat:"행위", ref:"-", title:"[질병군] 행위 별도보상 코드목록('26.8.3.기준)", date:"2026-08-04", views:59, isNew:true },
-  { cat:"약제", ref:"보건복지부 고시 제2026-155호", title:"퇴장방지의약품 목록(2026년 8월)", date:"2026-08-03", views:60 },
-  { cat:"행위", ref:"고시 제2026-169호", title:"[행위] 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-07-31", views:106 },
-  { cat:"행위", ref:"고시 제2026-162호", title:"[행위] 「본인일부부담금 산정특례에 관한 기준」 일부개정", date:"2026-07-31", views:53 },
-  { cat:"행위", ref:"고시 제2026-165호", title:"[행위] 의·치과 수가파일('26.7.31.)_비디오 두부충동검사 등 안내(전체판 포함)", date:"2026-07-31", views:353 },
-  { cat:"행위", ref:"고시 제2026-153호", title:"[행위] 의·치과 수가파일('26.7.30.)_클립을 사용한 경피적 경도관 승모판 재건술 등 안내", date:"2026-07-30", views:131 },
-  { cat:"마스터파일", ref:"고시 제2026-163호", title:"[치료재료] 고시 제2026-163호「치료재료 급여·비급여 목록 및 급여상한금액표」(재료대 파일)(2026.8.1.고시)_7.31.수정", date:"2026-07-30", views:504 },
-  { cat:"마스터파일", ref:"고시 제2026-163호", title:"[치료재료] 고시 제2026-163호「치료재료 급여·비급여 목록 및 급여상한금액표」(MEDICAL DEVICE PRICE LIST 파일)(2026.8.1.고시)_7.31.수정", date:"2026-07-30", views:772 },
-  { cat:"치료재료", ref:"고시 제2026-163호", title:"[치료재료] 고시 제2026-163호「치료재료 급여·비급여 목록 및 급여상한금액표」일부 개정(2026.8.1.고시)", date:"2026-07-30", views:383 },
+  { cat:"행위", ref:"고시 제2026-173호", title:"[행위] 의·치과 수가파일('26.8.31.)_양전자방출단층촬영 동위원소 신설 등 안내", date:"2026-08-31", views:24, isNew:true },
+  { cat:"약제", ref:"보건복지부 고시 제2026-175호", title:"퇴장방지의약품 목록(2026년 9월)", date:"2026-08-31", views:24, isNew:true },
+  { cat:"약제", ref:"고시 제2026-176호", title:"[약제] 고시 제2026-176호 요양급여 적용기준 및 방법에 관한 세부사항 안내", date:"2026-08-31", views:69, isNew:true },
+  { cat:"치료재료", ref:"고시 제2026-179호", title:"[치료재료] 고시 제2026-179호 「선별급여 지정 및 실시 등에 관한 기준」일부개정", date:"2026-08-28", views:95, isNew:true },
+  { cat:"치료재료", ref:"고시 제2026-178호", title:"[치료재료] 고시 제2026-178호 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-08-28", views:73, isNew:true },
+  { cat:"치료재료", ref:"고시 제2026-177호", title:"[치료재료] 고시 제2026-177호「치료재료 급여·비급여 목록 및 급여상한금액표」일부 개정(2026.9.1.고시)", date:"2026-08-27", views:318, isNew:true },
+  { cat:"마스터파일", ref:"고시 제2026-177호", title:"[치료재료] 고시 제2026-177호「치료재료 급여·비급여 목록 및 급여상한금액표」(MEDICAL DEVICE PRICE LIST 파일)(2026.9.1.고시)_8.28.수정", date:"2026-08-27", views:469, isNew:true },
+  { cat:"마스터파일", ref:"고시 제2026-177호", title:"[치료재료] 고시 제2026-177호「치료재료 급여·비급여 목록 및 급여상한금액표」(재료대 파일)(2026.9.1.고시)_8.28.수정", date:"2026-08-27", views:246, isNew:true },
+  { cat:"행위", ref:"고시 제2026-173호", title:"[행위] 고시 제2026-173호 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정", date:"2026-08-24", views:193 },
+  { cat:"치료재료", ref:"-", title:"[질병군] 치료재료 별도보상 코드 목록('26.8.1. 기준)", date:"2026-08-04", views:244 },
 ];
 
-// 주간 워드/웹페이지 브리핑 아카이브 (예약 작업이 매주 항목을 추가)
+// 주간 워드/웹페이지 브리핑 아카이브 (예약 작업이 매주 항목을 추가; 이번 회차는 지난주 범위 내 신규 고시가 없어 항목 추가 없음)
 const briefings = [
   { periodStart:"2026-06-29", periodEnd:"2026-07-06", generatedOn:"2026-07-14",
     htmlUrl:"briefings/2026-06-29_2026-07-06.html" },
@@ -371,7 +371,7 @@ const briefings = [
     htmlUrl:"briefings/2026-07-07_2026-07-20.html" },
 ];
 
-const totals = { notice: 4586, archive: 6064 };
+const totals = { notice: 4592, archive: 6073 };
 const allCategories = ["전체","청구관련기준자료","포괄수가제","의료급여","완화의료","약제","자동차보험","심사사후관리","치료재료","행위","DUR","응급대불","산정특례","요양병원","퇴장방지의약품","청구방법","마스터파일"];
 const sourceListUrl = "https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrList.do?pgmid=HIRAA030069000400";
 
@@ -520,9 +520,9 @@ if (window.cowork && typeof window.cowork.runScheduledTask === "function") {
 // 분석 코멘트 (수집 데이터 기반 요약)
 const notes = document.getElementById("analysisNotes");
 notes.innerHTML = `
-  <p>이번 수집분(직전 수집일 2026-07-20 이후 ~ 2026-08-11)은 보험인정기준 '고시' 탭에 고시 제2026-159호(약제 7건)와 고시 제2026-166호(행위·치료재료 3건) 등 총 10건이 신규 게시되었습니다. 제2026-159호는 Empagliflozin, Pegcetacoplan, Emicizumab, Romiplostim, Dupilumab 등 주요 약제의 급여범위 확대·명확화가 다수이며, 제2026-166호는 선별급여 적합성평가에 따른 본인부담률 조정(항-Infliximab 항체 검사, 홀터기록 검사, 담췌관 ACCESS CATHETER)입니다.</p>
-  <p>'자료실' 탭에는 치료재료·행위 별도보상 코드 목록(질병군, 2026-08-04), 퇴장방지의약품 목록(2026년 8월, 2026-08-03), 치료재료 급여·비급여 목록 마스터파일 수정본(2026-07-30) 등이 등록되었습니다.</p>
-  <p><b>지난주(2026-08-04 ~ 2026-08-10) 게시 범위 확인 결과</b>: '고시' 탭 신규 게시물은 모두 2026-08-01자로 지난주 범위(08-04~08-10) 밖에 있어, 이번 회차는 고시번호 기준 블로그 게시글 생성 대상이 없습니다. '자료실' 탭에서는 질병군 별도보상 코드 목록 2건만 08-04에 게시되어 NEW로 표시했습니다.</p>
+  <p>이번 수집(2026-09-01 기준)에서 '고시' 탭 최신 10건은 직전 수집(2026-08-24, 고시 제2026-159호·제2026-166호)과 전량 교체되어, 고시 제2026-178호(치료재료 3건: MASTERS SERIES MECHANICAL HEART VALVE, MAGEC SPINAL BRACING AND DISTRACTION SYSTEM, 자44-1 척추교정술)와 고시 제2026-176호(약제 7건: 브레즈트리에어로스피어흡입제, 베오바정, 심퍼니, 탈츠, 퍼고베리스, 휴미라, 엔브렐)로 구성되었습니다.</p>
+  <p>'자료실' 탭에는 2026-08-27 ~ 2026-08-31 사이 신규 자료 7건이 등록되어 NEW로 표시했습니다: 고시 제2026-173호(행위 수가파일), 제2026-175호(퇴장방지의약품 목록), 제2026-176호(약제 세부사항 안내), 제2026-177호(치료재료 급여목록 개정 및 마스터파일 2건), 제2026-178호(요양급여 세부사항 일부개정), 제2026-179호(선별급여 기준 일부개정).</p>
+  <p><b>지난주(2026-08-25 ~ 2026-08-31) 게시 범위 확인 결과</b>: '고시' 탭 최신 10건은 모두 작성일이 2026-09-01(오늘)로 지난주 범위 밖이어서, 이번 회차도 직전 회차(08-24 수집)와 동일하게 고시번호 기준 블로그 게시글 생성 대상이 0건입니다. 다만 '자료실' 탭에는 위 7건이 지난주 범위 내에 게시되어 있어, 필요 시 이를 근거로 별도 브리핑 작성이 가능합니다.</p>
   <div class="note-warn">⚠ 참고: 상기 발췌·개정사유는 원문 팝업 텍스트를 요약 발췌한 것이며, 전체 조문 및 첨부파일(hwp/hwpx) 확인이 필요합니다.</div>
 `;
 </script>
