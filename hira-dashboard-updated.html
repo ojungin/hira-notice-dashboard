@@ -1,0 +1,531 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Hira Notice Dashboard",
+  "schemaVersion": 1,
+  "description": "건강보험심사평가원 제도·정책 > 보험인정기준(고시/자료실) 최신 개정사항 모니터링 대시보드. 분야별 필터/검색, 고시-자료실 연계, 분석 코멘트 제공."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>심사평가원 보험인정기준 고시·자료실 모니터링</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+    background: #f7f8fa;
+    color: #1f2328;
+    padding: 24px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #6b7280; font-size: 13px; }
+  .badge {
+    display: inline-block;
+    background: #eef2ff;
+    color: #3949ab;
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .kpi .num { font-size: 22px; font-weight: 700; }
+  .kpi .label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .panel h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .controls select, .controls input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  .controls input { flex: 1; min-width: 180px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eef0f2; vertical-align: top; }
+  th { color: #6b7280; font-weight: 600; font-size: 12px; background: #fafbfc; }
+  tr:hover { background: #f9fafb; }
+  .cat-tag {
+    display: inline-block;
+    background: #f1f3f5;
+    color: #495057;
+    border-radius: 5px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .cat-약제 { background: #e7f5ff; color: #1971c2; }
+  .cat-치료재료 { background: #fff4e6; color: #e8590c; }
+  .cat-행위 { background: #ebfbee; color: #2b8a3e; }
+  .cat-의료급여 { background: #f3f0ff; color: #6741d9; }
+  .cat-요양병원 { background: #fff0f6; color: #c2255c; }
+  .related {
+    font-size: 12px;
+    color: #495057;
+    margin-top: 4px;
+  }
+  .related a { color: #3949ab; text-decoration: none; }
+  .related a:hover { text-decoration: underline; }
+  .excerpt {
+    font-size: 12px;
+    color: #495057;
+    margin-top: 6px;
+    line-height: 1.6;
+    background: #f8f9fa;
+    border-left: 3px solid #dee2e6;
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .reason {
+    font-size: 12px;
+    color: #862e9c;
+    margin-top: 4px;
+  }
+  .reason b { font-weight: 700; }
+  .new-flag {
+    display: inline-block;
+    background: #e03131;
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .briefing-list { display: flex; flex-direction: column; gap: 8px; }
+  .briefing-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .briefing-item .period { font-weight: 600; }
+  .briefing-item .links a {
+    color: #3949ab;
+    text-decoration: none;
+    font-size: 12px;
+    margin-left: 12px;
+  }
+  .briefing-item .links a:hover { text-decoration: underline; }
+  a.src { color: #3949ab; text-decoration: none; font-size: 12px; }
+  a.src:hover { text-decoration: underline; }
+  .empty { color: #9ca3af; padding: 20px; text-align: center; font-size: 13px; }
+  .notes p { font-size: 13px; line-height: 1.7; margin: 0 0 8px; color: #343a40; }
+  .footer {
+    font-size: 12px;
+    color: #6b7280;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 14px;
+    line-height: 1.7;
+  }
+  .footer .disclaimer {
+    background: #fff9db;
+    border: 1px solid #ffe066;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #5c5602;
+    margin-bottom: 10px;
+  }
+  .headerRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  #refreshBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3949ab;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #refreshBtn:disabled { background: #9ca3af; cursor: default; }
+  #refreshStatus { font-size: 11px; color: #6b7280; text-align: right; max-width: 220px; }
+  .latest-briefing-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #3949ab;
+    text-decoration: none;
+    font-weight: 600;
+    background: #eef2ff;
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+  .latest-briefing-link:hover { text-decoration: underline; }
+  .note-warn {
+    font-size: 12px;
+    color: #a94442;
+    background: #fdf2f2;
+    border: 1px solid #f0c9c9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div>
+      <h1>심사평가원 보험인정기준 고시·자료실 모니터링</h1>
+      <div class="sub">제도·정책 &gt; 보험인정기준 (건강보험) 기준 · 최종 수집일 <span id="lastUpdated"></span></div>
+      <a id="latestBriefingLink" class="latest-briefing-link" href="#" target="_blank" rel="noopener" style="display:none">📰 최신 주간 브리핑 웹페이지 보기 →</a>
+    </div>
+    <div class="headerRight">
+      <span class="badge">자동 확인: 매주 월요일 오전 9시</span>
+      <button id="refreshBtn">🔄 지금 갱신하기</button>
+      <div id="refreshStatus"></div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="num" id="kpiNotice">-</div><div class="label">전체 고시 건수 (누적)</div></div>
+    <div class="kpi"><div class="num" id="kpiArchive">-</div><div class="label">전체 자료실 자료 (누적)</div></div>
+    <div class="kpi"><div class="num" id="kpiRecent">-</div><div class="label">최근 수집분 신규 고시</div></div>
+    <div class="kpi"><div class="num" id="kpiCats">-</div><div class="label">분류 카테고리 수</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>📌 최근 고시 목록</h2>
+    <div class="controls">
+      <select id="catFilter"></select>
+      <input id="searchBox" type="text" placeholder="고시번호, 제목 키워드로 검색">
+    </div>
+    <table id="noticeTable">
+      <thead>
+        <tr>
+          <th style="width:90px">분류</th>
+          <th style="width:120px">고시번호</th>
+          <th>제목</th>
+          <th style="width:90px">작성일</th>
+          <th style="width:60px">조회수</th>
+          <th style="width:70px">원문</th>
+        </tr>
+      </thead>
+      <tbody id="noticeBody"></tbody>
+    </table>
+    <div class="empty" id="noticeEmpty" style="display:none">조건에 맞는 고시가 없습니다.</div>
+  </div>
+
+  <div class="panel">
+    <h2>🗂 최근 자료실 등록 자료</h2>
+    <div class="controls">
+      <select id="archCatFilter"></select>
+      <input id="archSearchBox" type="text" placeholder="관련근거, 제목 키워드로 검색">
+    </div>
+    <table id="archiveTable">
+      <thead>
+        <tr>
+          <th style="width:90px">분류</th>
+          <th style="width:150px">관련근거</th>
+          <th>제목</th>
+          <th style="width:90px">게시일</th>
+          <th style="width:60px">조회수</th>
+        </tr>
+      </thead>
+      <tbody id="archiveBody"></tbody>
+    </table>
+    <div class="empty" id="archiveEmpty" style="display:none">조건에 맞는 자료가 없습니다.</div>
+  </div>
+
+  <div class="panel notes">
+    <h2>🔍 이번 수집분 분석 코멘트</h2>
+    <div id="analysisNotes"></div>
+  </div>
+
+  <div class="panel">
+    <h2>🗞 주간 브리핑 아카이브 (워드/웹페이지)</h2>
+    <div id="briefingList" class="briefing-list"></div>
+    <div class="empty" id="briefingEmpty" style="display:none">아직 생성된 주간 브리핑이 없습니다.</div>
+  </div>
+
+  <div class="footer">
+    <div class="disclaimer">
+      위 내용은 심사평가원 고시 기준으로 분석된 의견을 제시하는 것으로 명확한 심사관련 내용은 심사평가원에 질의 하여 주십시오.
+    </div>
+    데이터 출처: 건강보험심사평가원 홈페이지 &gt; 제도·정책 &gt; 보험인정기준 (고시 / 자료실)<br>
+    원문 목록 바로가기: <a class="src" href="https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrList.do?pgmid=HIRAA030069000400" target="_blank" rel="noopener">보험인정기준 검색 페이지</a><br>
+    담당부서(심사평가원): 기준운영부 033-739-4704
+  </div>
+
+</div>
+
+<script>
+const lastUpdated = "2026-09-21";
+
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (고시 탭, 건강보험 기준 1페이지) - 2026-09-21 수집
+const notices = [
+  { cat:"치료재료", no:"2026-178", title:"희소·필수 치료재료(MAGEC SPINAL BRACING AND DISTRACTION SYSTEM)의 급여기준", date:"2026-09-01", views:499,
+    excerpt:"MAGEC SPINAL BRACING AND DISTRACTION SYSTEM은 희소·필수 치료재료로, 식품의약품안전처장이 인정한 범위 내에서 다음의 경우에 요양급여를 인정함. 해당코드는 F0029001이며, 조기발병 척추측만증으로 인해 흉곽 부전 증후군(TIS)이 동반되었거나 그 위험이 있는 골격적으로 미성숙한 환자의 중증 진행성 척추 변형에 사용됨…",
+    reason:"희소·필수 치료재료 인정에 따른 급여기준 신설(자44-1 척추교정술 급여기준 준용)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=1&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0001&RN=1" },
+  { cat:"치료재료", no:"2026-178", title:"자44-1 자성 조절 가능 성장형 금속봉을 이용한 척추교정술의 급여기준", date:"2026-09-01", views:382,
+    excerpt:"2세 이상 10세 이하의 조기 발현형 척추 측만증 환자를 대상으로 40도 이상의 만곡이 있는 특발성 측만증, 선천성 측만증, 흉추부의 전만곡이 동반된 측만증 중 하나에 해당하는 경우 삽입술에 대해 요양급여를 인정하며, 연장술은 외부조절기를 이용해 2~3개월 간격으로 시행할 때 인정함…",
+    reason:"치료재료 신규 등재에 따른 급여기준 개정 (변경 전 고시 제2023-293호, 2024.1.1.시행)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=2&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0003&RN=2" },
+  { cat:"치료재료", no:"2026-178", title:"하비갑개 용적감소술용 PROBE의 급여기준", date:"2026-09-01", views:314,
+    excerpt:"하비갑개 용적감소술용 PROBE는 「선별급여 지정 및 실시 등에 관한 기준」에 따라 본인부담률을 80%로 적용하며, 편측 또는 양측 수술에 관계없이 수술당 1개 인정함. (고시 제2026-178호, 2026.9.1.시행)",
+    reason:"치료재료 중분류명 변경에 따른 급여기준 개정 (변경 전 고시 제2022-125호, 2022.6.1.시행)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=3&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0004&RN=3" },
+  { cat:"치료재료", no:"2026-178", title:"희소·필수 치료재료(MASTERS SERIES MECHANICAL HEART VALVE)의 급여기준", date:"2026-09-01", views:336,
+    excerpt:"MASTERS SERIES MECHANICAL HEART VALVE는 희소·필수치료재료로, 식품의약품안전처장이 인정한 범위 내에서 해당코드 G2012001에 대해 요양급여를 인정함. 사용목적은 원래의 심장판막의 기능을 대신할 수 있는 기구(소아용)임. (고시 제2026-178호, 2026.9.1.시행)",
+    reason:"제품명 변경에 따른 급여기준 개정 (변경 전 고시 제2023-38호, 2023.3.1.시행)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=4&mtgHmeDd=20260901&sno=1&mtgMtrRegSno=0002&RN=4" },
+  { cat:"약제", no:"2026-176", title:"Vibegron 경구제(품명 : 베오바정50밀리그램)", date:"2026-09-01", views:444,
+    excerpt:"허가사항 범위(과민성 방광의 배뇨 절박감, 빈뇨 및 절박성 요실금 증상의 치료) 내에서 투여 시 요양급여를 인정함. 신규 등재 예정에 따라 교과서, 가이드라인, 임상논문, 학회의견, 제외국 평가결과 등을 참조하여 급여기준을 신설함…",
+    reason:"신규 등재 예정에 따라 급여기준을 신설함",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=5&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0005&RN=5" },
+  { cat:"약제", no:"2026-176", title:"Golimumab 주사제(품명: 심퍼니프리필드시린지주 50밀리그램 등)", date:"2026-09-01", views:357,
+    excerpt:"성인 활동성 및 진행성 류마티스관절염, 건선성 관절염, 강직성척추염, 궤양성대장염 등 허가사항 범위 내 세부 평가기준 충족 시 요양급여를 인정하며, 이번 개정으로 중증의 활동성 비방사선 축성 척추관절염이 급여 대상에 추가됨…",
+    reason:"교과서·가이드라인·임상연구문헌·학회(전문가) 의견 등을 참조하여 비방사선 축성 척추관절염에 급여 확대 (변경 전 고시 제2024-273호, 2025.1.1.)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=6&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0006&RN=6" },
+  { cat:"약제", no:"2026-176", title:"Ixekizumab 주사제(품명: 탈츠프리필드시린지주 등)", date:"2026-09-01", views:347,
+    excerpt:"건선, 건선성 관절염, 강직성척추염 환자에 대해 허가사항 범위 내 세부 평가기준 충족 시 요양급여를 인정하며, 이번 개정으로 중증의 활동성 비방사선 축성 척추관절염이 급여 대상에 추가됨…",
+    reason:"교과서·가이드라인·임상연구문헌·학회(전문가) 의견 등을 참조하여 비방사선 축성 척추관절염에 급여 확대",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=7&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0008&RN=7" },
+  { cat:"약제", no:"2026-176", title:"follitropin-α + lutropin α(r-hLH) 복합주사제(품명: 퍼고베리스주 등)", date:"2026-09-01", views:360,
+    excerpt:"저성선자극호르몬성 성선부전증 여성의 배란유도 또는 보조생식술에 사용 시 요양급여를 인정하며, 이번 개정으로 품명에 '등'을 추가하고 세부인정기준의 단위 표기를 바이알에서 '성분의 IU 단위'로 변경함…",
+    reason:"요양급여 신규등재에 따른 급여기준 변경 (변경 전 고시 제2024-55호, 2024.4.1.)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=8&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0009&RN=8" },
+  { cat:"약제", no:"2026-176", title:"Adalimumab 주사제(품명: 휴미라주 등)", date:"2026-09-01", views:439,
+    excerpt:"류마티스관절염, 소아 특발성 관절염, 건선성 관절염, 강직성척추염, 크론병, 건선, 궤양성대장염, 베체트 장염, 화농성 한선염, 비감염성 포도막염 등 다양한 적응증에 대해 세부기준 충족 시 요양급여를 인정하며, 이번 개정으로 비방사선 축성 척추관절염이 급여 대상에 추가됨…",
+    reason:"교과서·가이드라인·임상연구문헌·학회(전문가) 의견 등을 참조하여 비방사선 축성 척추관절염에 급여 확대 (변경 전 고시 제2025-189호, 2025.12.1.)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=9&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0010&RN=9" },
+  { cat:"약제", no:"2026-176", title:"Etanercept 주사제(품명: 엔브렐주사 등)", date:"2026-09-01", views:361,
+    excerpt:"류마티스관절염, 소아 특발성 관절염, 건선성 관절염, 강직성척추염, 건선 환자에 대해 세부기준 충족 시 요양급여를 인정하며, 이번 개정으로 중증의 활동성 비방사선 축성 척추관절염이 급여 대상에 추가됨…",
+    reason:"교과서·가이드라인·임상연구문헌·학회(전문가) 의견 등을 참조하여 비방사선 축성 척추관절염에 급여 확대 (변경 전 고시 제2025-88호, 2025.6.1.)",
+    popupUrl:"https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrPopup.do?no=10&mtgHmeDd=20260901&sno=2&mtgMtrRegSno=0011&RN=10" },
+];
+
+// 실제 심사평가원 사이트에서 수집한 최신 스냅샷 (자료실 탭 1페이지) - 2026-09-21 수집
+// 지난 수집(09-01) 대비 신규 게시: 2026-09-15(고시 제2026-188호), 2026-09-01(고시 제2026-184호 관련, 질병군 코드목록) 총 3건
+const archives = [
+  { cat:"행위", ref:"고시 제2026-188호", title:"[행위] 고시 제2026-188호 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정", date:"2026-09-15", views:148, isNew:true },
+  { cat:"행위", ref:"고시 제2026-184호", title:"[행위 및 치료재료] 고시 제2026-184호 「선별급여 지정 및 실시 등에 관한 기준」 일부개정", date:"2026-09-01", views:167, isNew:true },
+  { cat:"치료재료", ref:"-", title:"[질병군] 치료재료 별도보상 코드 목록('26.9.1.기준)", date:"2026-09-01", views:124, isNew:true },
+  { cat:"행위", ref:"고시 제2026-173호", title:"[행위] 의·치과 수가파일('26.8.31.)_양전자방출단층촬영 동위원소 신설 등 안내(전체판 포함)", date:"2026-08-31", views:424 },
+  { cat:"약제", ref:"보건복지부 고시 제2026-175호", title:"퇴장방지의약품 목록(2026년 9월)", date:"2026-08-31", views:136 },
+  { cat:"약제", ref:"고시 제2026-176호", title:"[약제] 고시 제2026-176호 요양급여 적용기준 및 방법에 관한 세부사항 안내", date:"2026-08-31", views:269 },
+  { cat:"치료재료", ref:"고시 제2026-179호", title:"[치료재료] 고시 제2026-179호 「선별급여 지정 및 실시 등에 관한 기준」일부개정", date:"2026-08-28", views:218 },
+  { cat:"치료재료", ref:"고시 제2026-178호", title:"[치료재료] 고시 제2026-178호 「요양급여의 적용기준 및 방법에 관한 세부사항」 일부개정", date:"2026-08-28", views:188 },
+  { cat:"치료재료", ref:"고시 제2026-177호", title:"[치료재료] 고시 제2026-177호「치료재료 급여·비급여 목록 및 급여상한금액표」일부 개정(2026.9.1.고시)", date:"2026-08-27", views:1003 },
+  { cat:"마스터파일", ref:"고시 제2026-177호", title:"[치료재료] 고시 제2026-177호「치료재료 급여·비급여 목록 및 급여상한금액표」(MEDICAL DEVICE PRICE LIST 파일)(2026.9.1.고시)_8.28.수정", date:"2026-08-27", views:1388 },
+];
+
+// 주간 워드/웹페이지 브리핑 아카이브 (예약 작업이 매주 항목을 추가; 지난주 범위 내 신규 '고시' 탭 게시물이 없어 이번 회차도 블로그 항목 추가 없음)
+const briefings = [
+  { periodStart:"2026-06-29", periodEnd:"2026-07-06", generatedOn:"2026-07-14",
+    htmlUrl:"briefings/2026-06-29_2026-07-06.html" },
+  { periodStart:"2026-07-07", periodEnd:"2026-07-20", generatedOn:"2026-07-20",
+    htmlUrl:"briefings/2026-07-07_2026-07-20.html" },
+];
+
+const totals = { notice: 4594, archive: 6076 };
+const allCategories = ["전체","청구관련기준자료","포괄수가제","의료급여","완화의료","약제","자동차보험","심사사후관리","치료재료","행위","DUR","응급대불","산정특례","요양병원","퇴장방지의약품","청구방법","마스터파일"];
+const sourceListUrl = "https://www.hira.or.kr/rc/insu/insuadtcrtr/InsuAdtCrtrList.do?pgmid=HIRAA030069000400";
+
+document.getElementById("lastUpdated").textContent = lastUpdated;
+document.getElementById("kpiNotice").textContent = totals.notice.toLocaleString();
+document.getElementById("kpiArchive").textContent = totals.archive.toLocaleString();
+document.getElementById("kpiRecent").textContent = 10;
+document.getElementById("kpiCats").textContent = allCategories.length - 1;
+
+function fillSelect(id, cats) {
+  const sel = document.getElementById(id);
+  sel.innerHTML = "";
+  cats.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c; opt.textContent = c;
+    sel.appendChild(opt);
+  });
+}
+fillSelect("catFilter", ["전체", ...Array.from(new Set(notices.map(n=>n.cat)))]);
+fillSelect("archCatFilter", ["전체", ...Array.from(new Set(archives.map(a=>a.cat)))]);
+
+function catClass(cat) {
+  return "cat-tag cat-" + cat;
+}
+
+function renderNotices() {
+  const cat = document.getElementById("catFilter").value;
+  const q = document.getElementById("searchBox").value.trim().toLowerCase();
+  const body = document.getElementById("noticeBody");
+  body.innerHTML = "";
+  const filtered = notices.filter(n => {
+    const okCat = cat === "전체" || n.cat === cat;
+    const okQ = !q || n.title.toLowerCase().includes(q) || n.no.includes(q);
+    return okCat && okQ;
+  });
+  document.getElementById("noticeEmpty").style.display = filtered.length ? "none" : "block";
+  filtered.forEach(n => {
+    const tr = document.createElement("tr");
+    const related = archives.filter(a => a.ref.includes(n.no));
+    const relatedHtml = related.length
+      ? `<div class="related">📎 관련 자료실: ${related.map(r=>r.title).join(" / ")}</div>`
+      : "";
+    const excerptHtml = n.excerpt
+      ? `<div class="excerpt">${n.excerpt}</div>`
+      : "";
+    const reasonHtml = n.reason
+      ? `<div class="reason"><b>개정사유:</b> ${n.reason}</div>`
+      : "";
+    const linkUrl = n.popupUrl || sourceListUrl;
+    tr.innerHTML = `
+      <td><span class="${catClass(n.cat)}">${n.cat}</span></td>
+      <td>고시 제${n.no}호</td>
+      <td>${n.title}${excerptHtml}${reasonHtml}${relatedHtml}</td>
+      <td>${n.date}</td>
+      <td>${n.views}</td>
+      <td><a class="src" href="${linkUrl}" target="_blank" rel="noopener">본문 ↗</a></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function renderArchives() {
+  const cat = document.getElementById("archCatFilter").value;
+  const q = document.getElementById("archSearchBox").value.trim().toLowerCase();
+  const body = document.getElementById("archiveBody");
+  body.innerHTML = "";
+  const filtered = archives.filter(a => {
+    const okCat = cat === "전체" || a.cat === cat;
+    const okQ = !q || a.title.toLowerCase().includes(q) || a.ref.toLowerCase().includes(q);
+    return okCat && okQ;
+  });
+  document.getElementById("archiveEmpty").style.display = filtered.length ? "none" : "block";
+  filtered.forEach(a => {
+    const tr = document.createElement("tr");
+    const newFlag = a.isNew ? `<span class="new-flag">NEW</span>` : "";
+    tr.innerHTML = `
+      <td><span class="${catClass(a.cat)}">${a.cat}</span></td>
+      <td>${a.ref}</td>
+      <td>${a.title}${newFlag}</td>
+      <td>${a.date}</td>
+      <td>${a.views}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+["catFilter","searchBox"].forEach(id => document.getElementById(id).addEventListener("input", renderNotices));
+["archCatFilter","archSearchBox"].forEach(id => document.getElementById(id).addEventListener("input", renderArchives));
+
+renderNotices();
+renderArchives();
+
+function renderBriefings() {
+  const list = document.getElementById("briefingList");
+  const sorted = [...briefings].sort((a, b) => b.periodStart.localeCompare(a.periodStart));
+  document.getElementById("briefingEmpty").style.display = sorted.length ? "none" : "block";
+  list.innerHTML = "";
+  sorted.forEach(b => {
+    const div = document.createElement("div");
+    div.className = "briefing-item";
+    div.innerHTML = `
+      <span class="period">${b.periodStart} ~ ${b.periodEnd}</span>
+      <span class="links">
+        <a href="${b.htmlUrl}" target="_blank" rel="noopener">웹페이지로 보기 ↗</a>
+      </span>
+    `;
+    list.appendChild(div);
+  });
+  // 헤더 영역에도 최신 브리핑 바로가기 링크를 노출 (스크롤 없이 바로 확인 가능하도록)
+  const topLink = document.getElementById("latestBriefingLink");
+  if (sorted.length) {
+    topLink.href = sorted[0].htmlUrl;
+    topLink.textContent = `📰 최신 주간 브리핑 웹페이지 보기 (${sorted[0].periodStart} ~ ${sorted[0].periodEnd}) →`;
+    topLink.style.display = "inline-block";
+  } else {
+    topLink.style.display = "none";
+  }
+}
+renderBriefings();
+
+// 예약된 작업("hira-notice-monitor") 수동 실행 버튼
+const refreshBtn = document.getElementById("refreshBtn");
+const refreshStatus = document.getElementById("refreshStatus");
+const SCHEDULED_TASK_ID = "hira-notice-monitor";
+
+if (window.cowork && typeof window.cowork.runScheduledTask === "function") {
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.disabled = true;
+    refreshStatus.textContent = "예약 작업 실행 요청 중...";
+    try {
+      await window.cowork.runScheduledTask(SCHEDULED_TASK_ID);
+      refreshStatus.textContent = "요청 완료. 작업이 끝나면 이 페이지가 최신 데이터로 갱신됩니다.";
+    } catch (e) {
+      console.error("runScheduledTask failed", e);
+      refreshStatus.textContent = "실행 실패: " + (e && e.message ? e.message : "알 수 없는 오류");
+      refreshBtn.disabled = false;
+    }
+  });
+} else {
+  // Cowork 아티팩트 환경이 아닌 경우(단일 HTML 파일로 열람 시) 버튼 비활성화
+  refreshBtn.disabled = true;
+  refreshBtn.textContent = "🔒 갱신하기 (Cowork 앱에서만 가능)";
+  refreshStatus.textContent = "이 기능은 Cowork 아티팩트로 열었을 때만 동작합니다.";
+}
+
+// 분석 코멘트 (수집 데이터 기반 요약)
+const notes = document.getElementById("analysisNotes");
+notes.innerHTML = `
+  <p>이번 수집(2026-09-21 기준)에서 '고시' 탭 최신 10건은 직전 수집(2026-09-01)과 동일하게 고시 제2026-178호(치료재료 4건: MAGEC SPINAL BRACING AND DISTRACTION SYSTEM, 자44-1 척추교정술, 하비갑개 용적감소술용 PROBE, MASTERS SERIES MECHANICAL HEART VALVE)와 고시 제2026-176호(약제 6건: 베오바정, 심퍼니, 탈츠, 퍼고베리스, 휴미라, 엔브렐)로 구성되며, 게시일은 여전히 2026-09-01입니다. 조회수는 전 항목에서 큰 폭으로 증가했고, 전체 고시 누적 건수는 4,592건→4,594건으로 소폭 늘었습니다(직전 목록에 있던 '브레즈트리에어로스피어흡입제'는 이번 상위 10건에서 하비갑개 PROBE 항목에 밀려 제외됨).</p>
+  <p>'자료실' 탭에는 2026-09-01 ~ 2026-09-15 사이 신규 자료 3건이 등록되어 NEW로 표시했습니다: 고시 제2026-188호(행위, 2026-09-15 게시, 「건강보험 행위 급여·비급여 목록표 및 급여 상대가치점수」 일부개정), 고시 제2026-184호(행위 및 치료재료, 2026-09-01 게시, 「선별급여 지정 및 실시 등에 관한 기준」 일부개정), 질병군 치료재료 별도보상 코드 목록('26.9.1.기준, 2026-09-01 게시). 자료실 누적 건수는 6,073건→6,076건으로 늘었습니다.</p>
+  <p><b>지난주(2026-09-14 ~ 2026-09-20) 게시 범위 확인 결과</b>: '고시' 탭 최신 10건은 모두 작성일이 2026-09-01로 지난주 범위 밖이어서, 고시번호 기준 블로그 게시글 생성 대상은 이번 회차도 0건입니다. 다만 '자료실'에는 2026-09-15 게시된 고시 제2026-188호(행위) 관련 자료가 지난주 범위 내에 있으나, '고시' 탭 자체에는 해당 고시번호의 개별 급여기준 레코드가 아직 등록되어 있지 않아(작성일 기준 최신 레코드가 2026-09-01에 머물러 있음) 이번 스키마의 블로그 생성 기준(고시 탭 작성일)에는 해당하지 않습니다. 참고용으로만 자료실 신규 3건을 대시보드에 반영했습니다.</p>
+  <div class="note-warn">⚠ 참고: 상기 발췌·개정사유는 원문 팝업 텍스트를 요약 발췌한 것이며, 전체 조문 및 첨부파일(hwp/hwpx) 확인이 필요합니다.</div>
+`;
+</script>
+
+</body>
+</html>
